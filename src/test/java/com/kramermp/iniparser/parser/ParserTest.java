@@ -40,26 +40,26 @@ class ParserTest {
 
     @Test
     void isKeyTrue() {
-        assertTrue(Parser.isKey(sampleSectionKey));
+        assertTrue(Parser.isSectionKey(sampleSectionKey));
     }
 
     @Test
     void isKeyFalseBadKey1() {
-        assertFalse(Parser.isKey(sampleBadKey1));
+        assertFalse(Parser.isSectionKey(sampleBadKey1));
     }
     @Test
     void isKeyFalseBadKey2() {
-        assertFalse(Parser.isKey(sampleBadKey2));
+        assertFalse(Parser.isSectionKey(sampleBadKey2));
     }
 
 
     @Test 
     void isKeyFalseLine() {
-        assertFalse(Parser.isKey(sampleLine));
+        assertFalse(Parser.isSectionKey(sampleLine));
     }
     @Test
     void isKeyFalseComment() {
-        assertFalse(Parser.isKey(sampleComment));
+        assertFalse(Parser.isSectionKey(sampleComment));
     }
 
     @Test

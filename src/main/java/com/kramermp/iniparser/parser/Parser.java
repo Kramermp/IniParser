@@ -12,7 +12,7 @@ public class Parser {
         return testString != null && testString.length() > 0 && testString.charAt(0) == COMMENT_CHAR;
     }
 
-    public static boolean isKey(String testString) {
+    public static boolean isSectionKey(String testString) {
         return testString != null
                 && testString.length() > 0
                 && testString.charAt(0) == KEY_OPENER
