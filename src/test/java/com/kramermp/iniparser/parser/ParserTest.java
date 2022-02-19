@@ -5,11 +5,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ParserTest {
-    String sampleKey = "[SampleKey]";
-    String sampleBadKey1  = "SampleBadKey1]";
-    String sampleBadKey2  = "[SampleBadKey2";
-    String sampleLine = "SampleLine=This";
-    String sampleComment = "#SampleComment";
+    String sampleSectionKey = Parser.KEY_OPENER + "SampleKey" + Parser.KEY_CLOSER;
+    String sampleBadKey1  = "SampleBadKey1" + Parser.KEY_CLOSER;
+    String sampleBadKey2  = Parser.KEY_OPENER + "SampleBadKey2";
+    String sampleKey = "SampleKey";
+    String sampleValue = "SampleValue";
+    String sampleLine = sampleKey + Parser.LINE_SPLIT + sampleValue;
+    String sampleComment = Parser.COMMENT_CHAR + "SampleComment";
     String emptyLine = "";
 
     @Test
@@ -33,12 +35,12 @@ class ParserTest {
     }
     @Test
     void isCommentFalseKey() {
-        assertFalse(Parser.isComment(sampleKey));
+        assertFalse(Parser.isComment(sampleSectionKey));
     }
 
     @Test
     void isKeyTrue() {
-        assertTrue(Parser.isKey(sampleKey));
+        assertTrue(Parser.isKey(sampleSectionKey));
     }
 
     @Test
@@ -61,7 +63,109 @@ class ParserTest {
     }
 
     @Test
-    void isLineTrue() {
-        assertTrue(Parser.isLine(sampleLine));
+    void getValuesSimple() {
+        String[] results = new String[0];
+        try {
+            results = Parser.getValues(sampleLine);
+            assertEquals(sampleKey, results[0]);
+            assertEquals(sampleValue, results[1]);
+        } catch (BadFormatException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void getValuesInLineComment() {
+        String[] results = new String[0];
+        try {
+            results = Parser.getValues(sampleLine + " " + sampleComment);
+            assertEquals(sampleKey, results[0]);
+            assertEquals(sampleValue, results[1]);
+        } catch (BadFormatException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void getValuesEscapedComment() {
+        String[] results = new String[0];
+        try {
+            results = Parser.getValues(sampleLine + Parser.ESCAPE + sampleComment);
+            assertEquals(sampleKey, results[0]);
+            assertEquals(sampleValue + sampleComment, results[1]);
+        } catch (BadFormatException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void getValuesEscapedSplit() {
+        String[] results = new String[0];
+        try {
+            results = Parser.getValues(sampleKey + Parser.ESCAPE  + Parser.LINE_SPLIT + sampleLine);
+            assertEquals(sampleKey + Parser.LINE_SPLIT + sampleKey, results[0]);
+            assertEquals(sampleValue, results[1]);
+        } catch (BadFormatException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void getValuesBadNoSplit() {
+        BadFormatException ex = null;
+        try {
+            String[] results = Parser.getValues(sampleKey + sampleValue);
+        } catch (BadFormatException e) {
+            ex = e;
+        }
+        assertNotNull(ex);
+    }
+
+    @Test
+    void getValuesBadNoKey() {
+        BadFormatException ex = null;
+        try {
+            String[] results = Parser.getValues(Parser.LINE_SPLIT + sampleValue);
+        } catch (BadFormatException e) {
+            ex = e;
+        }
+        assertNotNull(ex);
+    }
+
+    @Test
+    void getValuesBadNoValue() {
+        BadFormatException ex = null;
+        try {
+            String[] results = Parser.getValues(sampleKey + Parser.LINE_SPLIT);
+        } catch (BadFormatException e) {
+            ex = e;
+        }
+        assertNotNull(ex);
+    }
+
+    @Test
+    void getValuesBadEmptyLine() {
+        BadFormatException ex = null;
+        try {
+            String[] results = Parser.getValues(emptyLine);
+        } catch (BadFormatException e) {
+            ex = e;
+        }
+        assertNotNull(ex);
+    }
+
+    @Test
+    void getValuesBadEmptyNull() {
+        BadFormatException ex = null;
+        try {
+            String[] results = Parser.getValues(null);
+        } catch (BadFormatException e) {
+            ex = e;
+        }
+        assertNotNull(ex);
     }
 }
