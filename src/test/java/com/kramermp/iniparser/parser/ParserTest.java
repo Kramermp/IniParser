@@ -8,10 +8,21 @@ class ParserTest {
     String sampleKey = "[SampleKey]";
     String sampleLine = "SampleLine=This";
     String sampleComment = "#SampleComment";
+    String emptyLine = "";
 
     @Test
     void isCommentTrue() {
         assertTrue(Parser.isComment(sampleComment));
+    }
+
+    @Test
+    void isCommentEmptyLine() {
+        assertFalse(Parser.isComment(emptyLine));
+    }
+
+    @Test
+    void isCommentNull() {
+        assertFalse(Parser.isComment(null));
     }
 
     @Test
