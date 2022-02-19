@@ -1,4 +1,4 @@
-package com.kramermp.iniparser;
+package com.kramermp.iniparser.reader;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -6,13 +6,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class IniReader {
+public class Reader {
 
     String targetFile = "";
     BufferedReader in = null;
     HashMap<String, HashMap<String, String>> results = new HashMap<>();
 
-    public IniReader(String targetFile) throws IOException {
+    public Reader(String targetFile) throws IOException {
         this.targetFile = targetFile;
         this.in = new BufferedReader(new FileReader(targetFile));
         loadFile();
